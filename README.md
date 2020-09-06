@@ -3,7 +3,7 @@
 ## SD-WAN 20.3.1 in GNS3
 ### Topology
 
-![Alt text](images/07_RG.png?raw=true \"Title\")
+![Alt text](images/07_RG.png)
 
 ### Test
 
