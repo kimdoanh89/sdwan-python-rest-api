@@ -49,4 +49,4 @@ def authentication(vmanage):
             'X-XSRF-TOKEN': token}
     else:
         header = {'Content-Type': "application/json", 'Cookie': jsessionid}
-    return jsessionid, token, header
+    return header
