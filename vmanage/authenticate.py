@@ -37,7 +37,7 @@ class Authentication:
             return None
 
 
-def sdwan_login(vmanage):
+def authentication(vmanage):
     Auth = Authentication()
     jsessionid = Auth.get_jsessionid(vmanage)
     token = Auth.get_token(vmanage, jsessionid)
