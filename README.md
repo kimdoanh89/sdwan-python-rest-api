@@ -28,7 +28,7 @@ Commands:
   template  Commands to manage template: create, delete, list, show
 ```
 
-And for each command, it support some subcommands, for example:
+And for each command, it support some subcommands, for example, `template` command:
 
 ```bash
 -> % python sdwancli.py template
@@ -44,6 +44,23 @@ Commands:
   delete  Delete a feature template
   list    Get template list
   show    Show details of a feature template
+```
+
+Another `bfd` command has following subcommands:
+
+```bash
+-> % python sdwancli.py bfd                            
+Usage: sdwancli.py bfd [OPTIONS] COMMAND [ARGS]...
+
+  Commands monitor bfd sessions: link --state, summary
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  link     Get list of bfd links with status: up or down
+  session  Show BFD sessions at a device
+  summary  Show BFD summary of a device
 ```
 
 ## Requirements
@@ -68,7 +85,7 @@ pip3 install -r requirements.txt
 ```
 A .py file with the Cisco SD-WAN credentials has been created in `vmanage/constants.py`. You can edit the variables in the file to point to your own vManage instance.
 
-## Example 
+## Outputs
 - Device list
 
 ```bash
@@ -91,5 +108,11 @@ python sdwancli.py template delete --template_id cb81c4d1-110b-4f33-9925-bf48891
 ```bash
 python sdwancli.py bfd link --state up
 python sdwancli.py bfd link --state down
+python sdwancli.py bfd session --system_ip 2.2.2.1
+python sdwancli.py bfd summary --system_ip 2.2.2.1
 ```
 ![Alt text](images/03_bfd_link_up_down.png)
+
+![Alt text](images/03_bfd_session.png)
+
+![Alt text](images/03_bfd_summary.png)
