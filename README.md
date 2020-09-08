@@ -77,10 +77,12 @@ python sdwancli.py device list
 
 ![Alt text](images/01_device_list.png)
 
-- Template list
+- Template list, show, delete
 
 ```bash
 python sdwancli.py template list
+python sdwancli.py template show --template_id cb81c4d1-110b-4f33-9925-bf4889129019
+python sdwancli.py template delete --template_id cb81c4d1-110b-4f33-9925-bf4889129019
 ```
 ![Alt text](images/01_template_list.png)
 
