@@ -1,15 +1,22 @@
 import requests
 import urllib3
+import click
 from rich.console import Console
 from rich.table import Table
+from vmanage.constants import vmanage
 from vmanage.authenticate import authentication
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def device_list(vmanage):
+@click.group(name="device")
+def cli_device():
+    """Commands to manage device: list, show, create
     """
-    Get device list
-    """
+    pass
+
+
+@cli_device.command(name="list", help="Get device list")
+def device_list():
     headers = authentication(vmanage)
     base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
     api = "/device"
@@ -33,33 +40,4 @@ def device_list(vmanage):
                       f'[orange1]{item["site-id"]}[/orange1]',
                       f'[bright_green]{item["version"]}[/bright_green]',
                       f'[yellow]{item["device-model"]}[/yellow]')
-    console.print(table)
-
-
-def template_list(vmanage):
-    """
-    Get template list
-    """
-    headers = authentication(vmanage)
-    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
-    api = "/template/device"
-    url = base_url + api
-    response = requests.get(url=url, headers=headers, verify=False)
-    if response.status_code == 200:
-        items = response.json()['data']
-    else:
-        print("Failed to get list of devices " + str(response.text))
-        exit()
-    console = Console()
-    table = Table(
-        "Template Name", "Device Type", "Template ID",
-        "Attached devices", "Template version")
-
-    for item in items:
-        table.add_row(
-            f'[green]{item["templateName"]}[/green]',
-            f'[blue]{item["deviceType"]}[/blue]',
-            f'[magenta]{item["templateId"]}[/magenta]',
-            f'[orange1]{item["devicesAttached"]}[/orange1]',
-            f'[bright_yellow]{item["templateAttached"]}[/bright_yellow]')
     console.print(table)
