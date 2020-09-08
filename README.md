@@ -108,11 +108,18 @@ python sdwancli.py template delete --template_id cb81c4d1-110b-4f33-9925-bf48891
 ```bash
 python sdwancli.py bfd link --state up
 python sdwancli.py bfd link --state down
-python sdwancli.py bfd session --system_ip 2.2.2.1
-python sdwancli.py bfd summary --system_ip 2.2.2.1
 ```
 ![Alt text](images/03_bfd_link_up_down.png)
 
+```bash
+python sdwancli.py bfd session --system_ip 2.2.2.1
+```
+
+
 ![Alt text](images/03_bfd_session.png)
+
+```bash
+python sdwancli.py bfd summary --system_ip 2.2.2.1
+```
 
 ![Alt text](images/03_bfd_summary.png)
