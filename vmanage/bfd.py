@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @click.group(name="bfd")
 def cli_bfd():
-    """Commands monitor bfd sessions: link --state, summary
+    """Commands monitor bfd sessions: link --state, summary, session
     """
     pass
 

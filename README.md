@@ -14,7 +14,7 @@ You can edit the variables in the `vmanage/constants.py` to point to your own vM
 ## Current functions
 The code contains REST API calls to authenticate and interact with Cisco SD-WAN vManage 20.3.1. Currently, it supports the following functions:
 ```bash
--> % python sdwancli.py         
+-> % python sdwancli.py 
 Usage: sdwancli.py [OPTIONS] COMMAND [ARGS]...
 
   Command line tool for deploying templates to CISCO SDWAN.
@@ -23,12 +23,13 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  bfd       Commands monitor bfd sessions: link --state, summary
+  bfd       Commands monitor bfd sessions: link --state, summary, session
   device    Commands to manage device: list, show, create
+  sla       Commands for managing SLA Class: list, create, edit, delete
   template  Commands to manage template: create, delete, list, show
 ```
 
-And for each command, it support some subcommands, for example, `template` command:
+And for each command, it supports some subcommands, for example, `template` command:
 
 ```bash
 -> % python sdwancli.py template
@@ -86,7 +87,7 @@ pip3 install -r requirements.txt
 A .py file with the Cisco SD-WAN credentials has been created in `vmanage/constants.py`. You can edit the variables in the file to point to your own vManage instance.
 
 ## Outputs
-- Device list
+### Device list
 
 ```bash
 python sdwancli.py device list
@@ -94,7 +95,7 @@ python sdwancli.py device list
 
 ![Alt text](images/01_device_list.png)
 
-- Template list, show, delete
+### Template list, show, delete
 
 ```bash
 python sdwancli.py template list
@@ -103,7 +104,7 @@ python sdwancli.py template delete --template_id cb81c4d1-110b-4f33-9925-bf48891
 ```
 ![Alt text](images/01_template_list.png)
 
-- BFD sessions monitor
+### BFD sessions monitor
 
 ```bash
 python sdwancli.py bfd link --state up
@@ -123,3 +124,19 @@ python sdwancli.py bfd summary --system_ip 2.2.2.1
 ```
 
 ![Alt text](images/03_bfd_summary.png)
+
+### SLA Class manager
+
+```bash
+python sdwancli.py sla list
+python sdwancli.py sla create --name "Video-Games3" --description "videogame 3" --loss 1 --latency 20 --jitter 5
+```
+
+![Alt text](images/04_sla_list_create.png)
+
+```bash
+python sdwancli.py sla edit --name "Video-Games3" --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422 --loss 10 --latency 100 --jitter 20
+python sdwancli.py sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422
+```
+
+![Alt text](images/04_sla_edit_delete.png)
