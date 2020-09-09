@@ -4,6 +4,7 @@ import click
 from rich.console import Console
 from rich.table import Table
 from rich.text import Text
+import datetime
 import json
 from vmanage.constants import vmanage
 from vmanage.authenticate import authentication
@@ -32,18 +33,20 @@ def sla_list():
     console = Console()
     table = Table(
         "Name", "Loss (%)", "Latency (ms)", "jitter (ms)", "Reference Count",
-        "Updated by", "Last Updated", "SLA ID")
+        "Updated by", "SLA ID", "Last Updated")
 
     for item in items:
         # breakpoint()
+        time_date = datetime.datetime.fromtimestamp(
+            item["lastUpdated"]/1000).strftime('%c')
         table.add_row(f'[green]{item["name"]}[/green]',
                       f'[blue]{item["entries"][0]["loss"]}[/blue]',
                       f'[magenta]{item["entries"][0]["latency"]}[/magenta]',
                       f'[cyan]{item["entries"][0]["jitter"]}[/cyan]',
                       f'[orange1]{item["referenceCount"]}[/orange1]',
                       f'[bright_green]{item["owner"]}[/bright_green]',
-                      f'[yellow]{item["lastUpdated"]}[/yellow]',
-                      f'[magenta]{item["listId"]}[/magenta]')
+                      f'[magenta]{item["listId"]}[/magenta]',
+                      f'[yellow]{time_date}[/yellow]')
     console.print(table)
 
 

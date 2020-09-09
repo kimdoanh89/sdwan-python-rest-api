@@ -3,6 +3,7 @@ import urllib3
 import click
 from rich.console import Console
 from rich.table import Table
+import datetime
 from vmanage.constants import vmanage
 from vmanage.authenticate import authentication
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -34,13 +35,16 @@ def connection_status(state):
         "Link", "Status", "Last Updated")
 
     for item in items:
+        # breakpoint()
+        time_date = datetime.datetime.fromtimestamp(
+            int(item["lastupdated"])/1000).strftime('%c')
         table.add_row(f'[green]{item["asystem-ip"]}[/green]',
                       f'[blue]{item["ahost-name"]}[/blue]',
                       f'[magenta]{item["bsystem-ip"]}[/magenta]',
                       f'[cyan]{item["bhost-name"]}[/cyan]',
                       f'[orange1]{item["linkKeyDisplay"]}[/orange1]',
                       f'[bright_green]{item["state"]}[/bright_green]',
-                      f'[yellow]{item["lastupdated"]}[/yellow]')
+                      f'[yellow]{time_date}[/yellow]')
     console.print(table)
 
 
