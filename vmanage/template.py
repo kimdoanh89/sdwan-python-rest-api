@@ -12,7 +12,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @click.group(name="template")
 def cli_template():
-    """Commands to manage template: create, delete, list, show
+    """Commands to manage template: delete, list, show
     """
     pass
 

@@ -27,10 +27,10 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  bfd       Commands monitor bfd sessions: link --state, summary, session
-  device    Commands to manage device: list, show, create
+  bfd       Commands to monitor bfd sessions: link --state, summary, session
+  device    Commands to manage device: list
   sla       Commands for managing SLA Class: list, create, edit, delete
-  template  Commands to manage template: create, delete, list, show
+  template  Commands to manage template: delete, list, show
 ```
 
 And for each command, it supports some subcommands, for example, `template` command:
@@ -45,7 +45,6 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  create  Create a feature template
   delete  Delete a feature template
   list    Get template list
   show    Show details of a feature template
