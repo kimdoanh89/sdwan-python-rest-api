@@ -73,7 +73,7 @@ urwid = ["urwid"]
 watch = ["watchdog"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = false
@@ -81,7 +81,7 @@ python-versions = "*"
 version = "2020.6.20"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = false
@@ -89,7 +89,7 @@ python-versions = "*"
 version = "3.0.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Composable command line interface toolkit"
 name = "click"
 optional = false
@@ -161,7 +161,7 @@ python-versions = "*"
 version = "0.4.16"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -319,7 +319,7 @@ python-versions = "*"
 version = "2020.7.14"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = false
@@ -434,7 +434,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "b2145e2b829fc930c45f1135d401c50f8d3d1a622fe9214ee398526d05f72651"
+content-hash = "4a41598b6eb30d199a309c4794622f1c5ee17367df5a60499556b2246a5aa415"
 lock-version = "1.0"
 python-versions = "^3.8"
 
