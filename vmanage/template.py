@@ -4,7 +4,7 @@ import click
 import json
 from rich.console import Console
 from rich.table import Table
-from rich.text import Text
+# from rich.text import Text
 from vmanage.authenticate import authentication
 from vmanage.constants import vmanage
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -44,75 +44,74 @@ def template_list():
     console.print(table)
 
 
-@cli_template.command(name="create", help="Create a feature template")
-@click.option("--name", help="ID of the template you wish to delete")
-@click.option("--description", help="ID of the template you wish to delete")
-@click.option("--device_type", help="ID of the template you wish to delete")
-def create_template(name, description, device_type):
-    headers = authentication(vmanage)
-    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
-    api = "/template/device/feature?api_key=/template/device"
-    url = base_url + api
-    payload = {
-        "templateName": name,
-        "templateDescription": description,
-        "deviceType": device_type,
-        "configType": "template",
-        "factoryDefault": "true",
-        "policyId": "",
-        "featureTemplateUidRange": [],
-        "generalTemplates": [
-            {
-                "templateId": "70fd00fe-cc5e-4e19-a730-538a77e758d5",
-                "templateType": "aaa"
-            },
-            {
-                "templateId": "99f10289-4795-4512-8955-007902bea884",
-                "templateType": "bfd-vedge"
-            },
-            {
-                "templateId": "1327de66-2eff-4e83-8787-0060675dc498",
-                "templateType": "omp-vedge"
-            },
-            {
-                "templateId": "24fb3c60-f4a5-4daf-9910-be477a046b9e",
-                "templateType": "security-vedge"
-            },
-            {
-                "templateId": "5fb744ed-3bbd-47d8-bec2-19b46c158fb5",
-                "templateType": "system-vedge",
-                "subTemplates": [
-                    {
-                        "templateId": "7eb31a03-0ad1-4bac-b89c-5b3012b6d09d",
-                        "templateType": "logging"
-                    }
-                ]
-            },
-            {
-                "templateId": "71294ac3-0aaa-4115-8995-476a91eac976",
-                "templateType": "vpn-vedge"
-            },
-            {
-                "templateId": "bbc09a4e-c91f-4dcf-a3ca-654a2f3bd135",
-                "templateType": "vpn-vedge"
-            }
-        ],
-        "templateClass": "vedge"
-
-    }
-    response = requests.post(
-        url=url, data=json.dumps(payload), headers=headers, verify=False)
-    if response.status_code == 200:
-        items = response.json()
-        text = Text.assemble(
-            ("Successful", "bold green"),
-            " create template with templateID = ",
-            (items["templateId"], "magenta"))
-        console = Console()
-        console.print(text)
-    else:
-        print(str(response.text))
-        exit()
+# @cli_template.command(name="create", help="Create a feature template")
+# @click.option("--name", help="ID of the template you wish to delete")
+# @click.option("--description", help="ID of the template you wish to delete")
+# @click.option("--device_type", help="ID of the template you wish to delete")
+# def create_template(name, description, device_type):
+#     headers = authentication(vmanage)
+#     base_url = "https://"+f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+#     api = "/template/device/feature?api_key=/template/device"
+#     url = base_url + api
+#     payload = {
+#         "templateName": name,
+#         "templateDescription": description,
+#         "deviceType": device_type,
+#         "configType": "template",
+#         "factoryDefault": "true",
+#         "policyId": "",
+#         "featureTemplateUidRange": [],
+#         "generalTemplates": [
+#             {
+#                 "templateId": "70fd00fe-cc5e-4e19-a730-538a77e758d5",
+#                 "templateType": "aaa"
+#             },
+#             {
+#                 "templateId": "99f10289-4795-4512-8955-007902bea884",
+#                 "templateType": "bfd-vedge"
+#             },
+#             {
+#                 "templateId": "1327de66-2eff-4e83-8787-0060675dc498",
+#                 "templateType": "omp-vedge"
+#             },
+#             {
+#                 "templateId": "24fb3c60-f4a5-4daf-9910-be477a046b9e",
+#                 "templateType": "security-vedge"
+#             },
+#             {
+#                 "templateId": "5fb744ed-3bbd-47d8-bec2-19b46c158fb5",
+#                 "templateType": "system-vedge",
+#                 "subTemplates": [
+#                     {
+#                         "templateId": "7eb31a03-0ad1-4bac-b89c-5b3012b6d09d",
+#                         "templateType": "logging"
+#                     }
+#                 ]
+#             },
+#             {
+#                 "templateId": "71294ac3-0aaa-4115-8995-476a91eac976",
+#                 "templateType": "vpn-vedge"
+#             },
+#             {
+#                 "templateId": "bbc09a4e-c91f-4dcf-a3ca-654a2f3bd135",
+#                 "templateType": "vpn-vedge"
+#             }
+#         ],
+#         "templateClass": "vedge"
+#     }
+#     response = requests.post(
+#         url=url, data=json.dumps(payload), headers=headers, verify=False)
+#     if response.status_code == 200:
+#         items = response.json()
+#         text = Text.assemble(
+#             ("Successful", "bold green"),
+#             " create template with templateID = ",
+#             (items["templateId"], "magenta"))
+#         console = Console()
+#         console.print(text)
+#     else:
+#         print(str(response.text))
+#         exit()
 
 
 @cli_template.command(name="delete", help="Delete a feature template")

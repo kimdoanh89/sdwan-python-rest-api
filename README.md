@@ -4,7 +4,11 @@
 
 This public repo contains python code that can be used to interact with the Cisco SD-WAN vManage REST API. The environment is pre-configured to access my local SD-WAN lab in GNS3. 
 
-You can edit the variables in the `vmanage/constants.py` to point to your own vManage instance. 
+You can edit the variables in the `vmanage/constants.py` to point to your own vManage instance, the AlwaysOn SDWAN Sandbox, or the Reservable
+SDWAN Sandbox.
+
+**Note:** When you use the AlwaysOn Sandbox, you do not have permission to perform
+some commands such as `edit`, `create`, `delete`.
 
 
 ### Topology
@@ -62,6 +66,24 @@ Commands:
   link     Get list of bfd links with status: up or down
   session  Show BFD sessions at a device
   summary  Show BFD summary of a device
+```
+
+You can access the help of each subcommand to know about the arguments using 
+`python sdwancli.py {command} {subcommand} --help`, for example:
+
+```bash
+-> % python sdwancli.py sla create --help
+Usage: sdwancli.py sla create [OPTIONS]
+
+  Create a SLA Class
+
+Options:
+  --name TEXT         name of the SLA Class
+  --description TEXT  description of the SLA Class
+  --loss TEXT         loss 0 - 100 %
+  --latency TEXT      latency 1 - 1000 ms
+  --jitter TEXT       jitter 1 - 1000 ms
+  --help              Show this message and exit.
 ```
 
 ## Requirements
@@ -126,6 +148,7 @@ python sdwancli.py bfd summary --system_ip 2.2.2.1
 ![Alt text](images/03_bfd_summary.png)
 
 ### SLA Class manager
+#### SLA list and create
 
 ```bash
 python sdwancli.py sla list
@@ -134,6 +157,7 @@ python sdwancli.py sla create --name "Video-Games3" --description "videogame 3" 
 
 ![Alt text](images/04_sla_list_create.png)
 
+#### SLA edit and delete
 ```bash
 python sdwancli.py sla edit --name "Video-Games3" --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422 --loss 10 --latency 100 --jitter 20
 python sdwancli.py sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422

@@ -16,7 +16,8 @@ def cli_bfd():
     pass
 
 
-@cli_bfd.command(name="link", help="Get list of bfd links with status: up or down")
+@cli_bfd.command(
+    name="link", help="Get list of bfd links with status: up or down")
 @click.option("--state", help="State of BFD connections")
 def connection_status(state):
     headers = authentication(vmanage)
@@ -63,16 +64,18 @@ def summary_device(system_ip):
         exit()
     console = Console()
     table = Table(
-        "Last Updated", "Sessions Total", "Sessions Up", "Sessions Max",
-        "Sessions Flap", "App Route Poll Interval")
+        "Sessions Total", "Sessions Up", "Sessions Max",
+        "Sessions Flap", "App Route Poll Interval", "Last Updated")
 
     for item in items:
-        table.add_row(f'[green]{item["lastupdated"]}[/green]',
-                      f'[blue]{item["bfd-sessions-total"]}[/blue]',
+        time_date = datetime.datetime.fromtimestamp(
+            int(item["lastupdated"])/1000).strftime('%c')
+        table.add_row(f'[blue]{item["bfd-sessions-total"]}[/blue]',
                       f'[magenta]{item["bfd-sessions-up"]}[/magenta]',
                       f'[cyan]{item["bfd-sessions-max"]}[/cyan]',
                       f'[orange1]{item["bfd-sessions-flap"]}[/orange1]',
-                      f'[bright_green]{item["poll-interval"]}[/bright_green]')
+                      f'[bright_green]{item["poll-interval"]}[/bright_green]',
+                      f'[yellow]{time_date}[/yellow]')
     console.print(table)
 
 
@@ -91,13 +94,15 @@ def session_device(system_ip):
         exit()
     console = Console()
     table = Table(
-        "System IP", "Last Updated", "Site ID", "State", "Source TLOC color",
+        "System IP", "Site ID", "State", "Source TLOC color",
         "Remote TLOC color", "Source IP", "Destination Public IP",
-        "Destination Public Port", "Encapsulation", "Source Port")
+        "Destination Public Port", "Encapsulation", "Source Port",
+        "Last Updated")
 
     for item in items:
+        time_date = datetime.datetime.fromtimestamp(
+            int(item["lastupdated"])/1000).strftime('%c')
         table.add_row(f'[green]{item["system-ip"]}[/green]',
-                      f'[blue]{item["lastupdated"]}[/blue]',
                       f'[magenta]{item["site-id"]}[/magenta]',
                       f'[cyan]{item["state"]}[/cyan]',
                       f'[orange1]{item["local-color"]}[/orange1]',
@@ -106,5 +111,6 @@ def session_device(system_ip):
                       f'[cyan]{item["dst-ip"]}[/cyan]',
                       f'[orange1]{item["dst-port"]}[/orange1]',
                       f'[bright_green]{item["proto"]}[/bright_green]',
-                      f'[magenta]{item["src-port"]}[/magenta]')
+                      f'[magenta]{item["src-port"]}[/magenta]',
+                      f'[yellow]{time_date}[/yellow]',)
     console.print(table)
