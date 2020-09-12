@@ -4,6 +4,7 @@ from vmanage.device import cli_device
 from vmanage.template import cli_template
 from vmanage.bfd import cli_bfd
 from vmanage.sla import cli_sla
+from vmanage.omp import cli_omp
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -18,6 +19,7 @@ cli.add_command(cli_device)
 cli.add_command(cli_template)
 cli.add_command(cli_bfd)
 cli.add_command(cli_sla)
+cli.add_command(cli_omp)
 
 
 if __name__ == "__main__":

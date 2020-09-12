@@ -1,6 +1,6 @@
 # sdwan-python-rest-api
 
-## SD-WAN 20.3.1 in GNS3
+## SD-WAN 20.3.1
 
 This public repo contains python code that can be used to interact with the Cisco SD-WAN vManage REST API. The environment is pre-configured to access my local SD-WAN lab in GNS3. 
 
@@ -28,7 +28,8 @@ Options:
 
 Commands:
   bfd       Commands to monitor bfd sessions: link --state, summary, session
-  device    Commands to manage device: list
+  device    Commands to see details of device: list
+  omp       Commands to monitor omp: tlocs, tloc-paths
   sla       Commands for managing SLA Class: list, create, edit, delete
   template  Commands to manage template: delete, list, show
 ```
@@ -163,3 +164,21 @@ python sdwancli.py sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422
 ```
 
 ![Alt text](images/04_sla_edit_delete.png)
+
+### OMP monitor
+#### omp tlocs
+```bash
+python sdwancli.py omp tlocs --system_ip 2.2.2.1
+```
+
+![Alt text](images/05_omp_tlocs.png)
+
+#### omp tloc-paths
+```bash
+python sdwancli.py omp tloc-paths --system_ip 2.2.2.1
+```
+```bash
+tloc-paths entries 2.2.2.1 default ipsec
+tloc-paths entries 2.2.2.2 default ipsec
+tloc-paths entries 2.2.2.3 default ipsec
+```

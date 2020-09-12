@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 @click.group(name="device")
 def cli_device():
-    """Commands to manage device: list, show, create
+    """Commands to see details of device: list
     """
     pass
 
