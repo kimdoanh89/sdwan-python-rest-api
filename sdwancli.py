@@ -5,12 +5,13 @@ from vmanage.template import cli_template
 from vmanage.bfd import cli_bfd
 from vmanage.sla import cli_sla
 from vmanage.omp import cli_omp
+from vmanage.ipsec import cli_ipsec
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 @click.group()
 def cli():
-    """Command line tool for deploying templates to CISCO SDWAN.
+    """Command line tool to interact with CISCO SDWAN vManage.
     """
     pass
 
@@ -20,6 +21,7 @@ cli.add_command(cli_template)
 cli.add_command(cli_bfd)
 cli.add_command(cli_sla)
 cli.add_command(cli_omp)
+cli.add_command(cli_ipsec)
 
 
 if __name__ == "__main__":
