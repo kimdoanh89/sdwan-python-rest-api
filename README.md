@@ -184,3 +184,13 @@ tloc-paths entries 2.2.2.1 default ipsec
 tloc-paths entries 2.2.2.2 default ipsec
 tloc-paths entries 2.2.2.3 default ipsec
 ```
+
+### Trouble shooting commands
+
+| vEdge commands                   | Sdwancli commands                                                  |
+|----------------------------------|--------------------------------------------------------------------|
+| show control connections         | python sdwancli.py control connections --system_ip 2.2.2.1         |
+| show control connections-history | python sdwancli.py control connections-history --system_ip 2.2.2.1 |
+| show bfd sessions                | python sdwancli.py bfd sessions --system_ip 2.2.2.1                |
+| show omp tlocs                   | python sdwancli.py omp tlocs --system_ip 2.2.2.1                   |
+| show omp tloc-paths              | python sdwancli.py omp tloc-paths --system_ip 2.2.2.1              |

@@ -79,7 +79,7 @@ def summary_device(system_ip):
     console.print(table)
 
 
-@cli_bfd.command(name="session", help="Show BFD sessions at a device")
+@cli_bfd.command(name="sessions", help="Show BFD sessions at a device")
 @click.option("--system_ip", help="system ip of the device")
 def session_device(system_ip):
     headers = authentication(vmanage)
