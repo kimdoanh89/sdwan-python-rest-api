@@ -20,62 +20,64 @@ some commands such as `edit`, `create`, `delete`.
 ## Current functions
 The code contains REST API calls to authenticate and interact with Cisco SD-WAN vManage 20.3.1. Currently, it supports the following functions:
 ```bash
--> % python sdwancli.py 
-Usage: sdwancli.py [OPTIONS] COMMAND [ARGS]...
+-> % sdwancli
+Usage: sdwancli [OPTIONS] COMMAND [ARGS]...
 
-  Command line tool for deploying templates to CISCO SDWAN.
+  Command line tool to interact with CISCO SDWAN vManage.
 
 Options:
   --help  Show this message and exit.
 
 Commands:
   bfd       Commands to monitor bfd sessions: link --state, summary, session
+  control   Commands to monitor control plane: connections,...
   device    Commands to see details of device: list
+  ipsec     Commands to monitor ipsec: outbound-connections,...
   omp       Commands to monitor omp: tlocs, tloc-paths
   sla       Commands for managing SLA Class: list, create, edit, delete
-  template  Commands to manage template: delete, list, show
+  template  Commands to manage Device and Feature Templates: list, show,...
 ```
 
 And for each command, it supports some subcommands, for example, `template` command:
 
 ```bash
--> % python sdwancli.py template
-Usage: sdwancli.py template [OPTIONS] COMMAND [ARGS]...
+-> % sdwancli template
+Usage: sdwancli template [OPTIONS] COMMAND [ARGS]...
 
-  Commands to manage template: create, delete, list, show
+  Commands to manage Device and Feature Templates: list, show, create,
+  delete
 
 Options:
   --help  Show this message and exit.
 
 Commands:
-  delete  Delete a feature template
-  list    Get template list
-  show    Show details of a feature template
+  device   Manage Device Templates: list, show, create, delete
+  feature  Manage Feature Templates: list, show, create, delete
 ```
 
 Another `bfd` command has following subcommands:
 
 ```bash
--> % python sdwancli.py bfd                            
-Usage: sdwancli.py bfd [OPTIONS] COMMAND [ARGS]...
+-> % sdwancli bfd
+Usage: sdwancli bfd [OPTIONS] COMMAND [ARGS]...
 
-  Commands monitor bfd sessions: link --state, summary
+  Commands to monitor bfd sessions: link --state, summary, session
 
 Options:
   --help  Show this message and exit.
 
 Commands:
-  link     Get list of bfd links with status: up or down
-  session  Show BFD sessions at a device
-  summary  Show BFD summary of a device
+  link      Get list of bfd links with status: up or down
+  sessions  Show BFD sessions at a device
+  summary   Show BFD summary of a device
 ```
 
 You can access the help of each subcommand to know about the arguments using 
-`python sdwancli.py {command} {subcommand} --help`, for example:
+`sdwancli {command} {subcommand} --help`, for example:
 
 ```bash
--> % python sdwancli.py sla create --help
-Usage: sdwancli.py sla create [OPTIONS]
+-> % sdwancli sla create --help
+Usage: sdwancli sla create [OPTIONS]
 
   Create a SLA Class
 
@@ -106,7 +108,7 @@ Setup Python Virtual Environment (requires Python 3.8+)
 ```bash
 python3.8 -m venv venv
 source venv/bin/activate
-pip3 install -r requirements.txt
+pip install --editable .
 ```
 A .py file with the Cisco SD-WAN credentials has been created in `vmanage/constants.py`. You can edit the variables in the file to point to your own vManage instance.
 
@@ -114,7 +116,7 @@ A .py file with the Cisco SD-WAN credentials has been created in `vmanage/consta
 ### Device list
 
 ```bash
-python sdwancli.py device list
+sdwancli device list
 ```
 
 ![Alt text](images/01_device_list.png)
@@ -122,29 +124,29 @@ python sdwancli.py device list
 ### Template list, show, delete
 
 ```bash
-python sdwancli.py template list
-python sdwancli.py template show --template_id cb81c4d1-110b-4f33-9925-bf4889129019
-python sdwancli.py template delete --template_id cb81c4d1-110b-4f33-9925-bf4889129019
+sdwancli template list
+sdwancli template show --template_id cb81c4d1-110b-4f33-9925-bf4889129019
+sdwancli template delete --template_id cb81c4d1-110b-4f33-9925-bf4889129019
 ```
 ![Alt text](images/01_template_list.png)
 
 ### BFD sessions monitor
 
 ```bash
-python sdwancli.py bfd link --state up
-python sdwancli.py bfd link --state down
+sdwancli bfd link --state up
+sdwancli bfd link --state down
 ```
 ![Alt text](images/03_bfd_link_up_down.png)
 
 ```bash
-python sdwancli.py bfd session --system_ip 2.2.2.1
+sdwancli bfd session --system_ip 2.2.2.1
 ```
 
 
 ![Alt text](images/03_bfd_session.png)
 
 ```bash
-python sdwancli.py bfd summary --system_ip 2.2.2.1
+sdwancli bfd summary --system_ip 2.2.2.1
 ```
 
 ![Alt text](images/03_bfd_summary.png)
@@ -153,16 +155,16 @@ python sdwancli.py bfd summary --system_ip 2.2.2.1
 #### SLA list and create
 
 ```bash
-python sdwancli.py sla list
-python sdwancli.py sla create --name "Video-Games3" --description "videogame 3" --loss 1 --latency 20 --jitter 5
+sdwancli sla list
+sdwancli sla create --name "Video-Games3" --description "videogame 3" --loss 1 --latency 20 --jitter 5
 ```
 
 ![Alt text](images/04_sla_list_create.png)
 
 #### SLA edit and delete
 ```bash
-python sdwancli.py sla edit --name "Video-Games3" --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422 --loss 10 --latency 100 --jitter 20
-python sdwancli.py sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422
+sdwancli sla edit --name "Video-Games3" --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422 --loss 10 --latency 100 --jitter 20
+sdwancli sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422
 ```
 
 ![Alt text](images/04_sla_edit_delete.png)
@@ -170,14 +172,14 @@ python sdwancli.py sla delete --sla_id 9e5efdbe-ef79-4797-b3d3-d9b732d45422
 ### OMP monitor
 #### omp tlocs
 ```bash
-python sdwancli.py omp tlocs --system_ip 2.2.2.1
+sdwancli omp tlocs --system_ip 2.2.2.1
 ```
 
 ![Alt text](images/05_omp_tlocs.png)
 
 #### omp tloc-paths
 ```bash
-python sdwancli.py omp tloc-paths --system_ip 2.2.2.1
+sdwancli omp tloc-paths --system_ip 2.2.2.1
 ```
 ```bash
 tloc-paths entries 2.2.2.1 default ipsec
@@ -187,10 +189,10 @@ tloc-paths entries 2.2.2.3 default ipsec
 
 ### Trouble shooting commands
 
-| vEdge commands                   | Sdwancli commands                                                  |
-|----------------------------------|--------------------------------------------------------------------|
-| show control connections         | python sdwancli.py control connections --system_ip 2.2.2.1         |
-| show control connections-history | python sdwancli.py control connections-history --system_ip 2.2.2.1 |
-| show bfd sessions                | python sdwancli.py bfd sessions --system_ip 2.2.2.1                |
-| show omp tlocs                   | python sdwancli.py omp tlocs --system_ip 2.2.2.1                   |
-| show omp tloc-paths              | python sdwancli.py omp tloc-paths --system_ip 2.2.2.1              |
+| vEdge commands                   | Sdwancli commands                                        |
+|----------------------------------|----------------------------------------------------------|
+| show control connections         | sdwancli control connections --system_ip 2.2.2.1         |
+| show control connections-history | sdwancli control connections-history --system_ip 2.2.2.1 |
+| show bfd sessions                | sdwancli bfd sessions --system_ip 2.2.2.1                |
+| show omp tlocs                   | sdwancli omp tlocs --system_ip 2.2.2.1                   |
+| show omp tloc-paths              | sdwancli omp tloc-paths --system_ip 2.2.2.1              |
