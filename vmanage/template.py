@@ -7,18 +7,40 @@ from rich.table import Table
 # from rich.text import Text
 from vmanage.authenticate import authentication
 from vmanage.constants import vmanage
+import ast
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 @click.group(name="template")
 def cli_template():
-    """Commands to manage template: delete, list, show
+    """Commands to manage Device and Feature Templates: list, show, create, delete
     """
-    pass
 
 
-@cli_template.command(name="list", help="Get template list")
-def template_list():
+@click.group()
+def device():
+    """
+    Manage Device Templates: list, show, create, delete
+    """
+
+
+@click.group()
+def feature():
+    """
+    Manage Feature Templates: list, show, create, delete
+    """
+
+
+@click.group(name="create")
+def feature_create():
+    """
+    Create Feature Template: banner, system, vpn, vpn-int, ...
+    """
+
+
+@device.command(name="list", help="Get Device Template List")
+@click.option('--default/--no-default', help="Print system default templates", default=False)
+def template_list(default):
     headers = authentication(vmanage)
     base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
     api = "/template/device"
@@ -29,12 +51,15 @@ def template_list():
     else:
         print("Failed to get list of devices " + str(response.text))
         exit()
+
     console = Console()
     table = Table(
-        "Template Name", "Device Type", "Template ID",
+        "Template Name", "Device Model", "Template ID",
         "Attached devices", "Template version")
 
     for item in items:
+        if not default and item["factoryDefault"]:
+            continue
         table.add_row(
             f'[green]{item["templateName"]}[/green]',
             f'[blue]{item["deviceType"]}[/blue]',
@@ -44,77 +69,7 @@ def template_list():
     console.print(table)
 
 
-# @cli_template.command(name="create", help="Create a feature template")
-# @click.option("--name", help="ID of the template you wish to delete")
-# @click.option("--description", help="ID of the template you wish to delete")
-# @click.option("--device_type", help="ID of the template you wish to delete")
-# def create_template(name, description, device_type):
-#     headers = authentication(vmanage)
-#     base_url = "https://"+f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
-#     api = "/template/device/feature?api_key=/template/device"
-#     url = base_url + api
-#     payload = {
-#         "templateName": name,
-#         "templateDescription": description,
-#         "deviceType": device_type,
-#         "configType": "template",
-#         "factoryDefault": "true",
-#         "policyId": "",
-#         "featureTemplateUidRange": [],
-#         "generalTemplates": [
-#             {
-#                 "templateId": "70fd00fe-cc5e-4e19-a730-538a77e758d5",
-#                 "templateType": "aaa"
-#             },
-#             {
-#                 "templateId": "99f10289-4795-4512-8955-007902bea884",
-#                 "templateType": "bfd-vedge"
-#             },
-#             {
-#                 "templateId": "1327de66-2eff-4e83-8787-0060675dc498",
-#                 "templateType": "omp-vedge"
-#             },
-#             {
-#                 "templateId": "24fb3c60-f4a5-4daf-9910-be477a046b9e",
-#                 "templateType": "security-vedge"
-#             },
-#             {
-#                 "templateId": "5fb744ed-3bbd-47d8-bec2-19b46c158fb5",
-#                 "templateType": "system-vedge",
-#                 "subTemplates": [
-#                     {
-#                         "templateId": "7eb31a03-0ad1-4bac-b89c-5b3012b6d09d",
-#                         "templateType": "logging"
-#                     }
-#                 ]
-#             },
-#             {
-#                 "templateId": "71294ac3-0aaa-4115-8995-476a91eac976",
-#                 "templateType": "vpn-vedge"
-#             },
-#             {
-#                 "templateId": "bbc09a4e-c91f-4dcf-a3ca-654a2f3bd135",
-#                 "templateType": "vpn-vedge"
-#             }
-#         ],
-#         "templateClass": "vedge"
-#     }
-#     response = requests.post(
-#         url=url, data=json.dumps(payload), headers=headers, verify=False)
-#     if response.status_code == 200:
-#         items = response.json()
-#         text = Text.assemble(
-#             ("Successful", "bold green"),
-#             " create template with templateID = ",
-#             (items["templateId"], "magenta"))
-#         console = Console()
-#         console.print(text)
-#     else:
-#         print(str(response.text))
-#         exit()
-
-
-@cli_template.command(name="delete", help="Delete a feature template")
+@device.command(name="delete", help="Delete a Device Template")
 @click.option("--template_id", help="ID of the template you wish to delete")
 def delete_template(template_id):
     headers = authentication(vmanage)
@@ -129,8 +84,8 @@ def delete_template(template_id):
         exit()
 
 
-@cli_template.command(name="show", help="Show details of a feature template")
-@click.option("--template_id", help="ID of the template to show details")
+@device.command(name="show", help="Show details of a Device Template")
+@click.argument('template_id')
 def show_template(template_id):
     headers = authentication(vmanage)
     base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
@@ -142,3 +97,126 @@ def show_template(template_id):
     else:
         print("Failed to show the template " + str(template_id))
         exit()
+
+
+@feature.command(name="list", help="Get Feature Template list")
+@click.option('--default/--no-default', help="Print system default templates", default=False)
+def feature_list(default):
+    headers = authentication(vmanage)
+    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+    api = "/template/feature"
+    url = base_url + api
+    response = requests.get(url=url, headers=headers, verify=False)
+    if response.status_code == 200:
+        items = response.json()['data']
+    else:
+        print("Failed to get list of devices " + str(response.text))
+        exit()
+
+    console = Console()
+    table = Table(
+        "Template Name", "Template Type")
+    table.add_column("Device Model", width=15)
+    table.add_column("Template ID", width=36)
+    table.add_column("Attached devices", width=10)
+    table.add_column("Device Templates", width=10)
+
+    for item in items:
+        if not default and item["factoryDefault"]:
+            continue
+        table.add_row(
+            f'[green]{item["templateName"]}[/green]',
+            f'[blue]{item["templateType"]}[/blue]',
+            f'[blue]{item["deviceType"]}[/blue]',
+            f'[magenta]{item["templateId"]}[/magenta]',
+            f'[orange1]{item["devicesAttached"]}[/orange1]',
+            f'[bright_green]{item["attachedMastersCount"]}[/bright_green]')
+    console.print(table)
+
+
+@feature.command(name="delete", help="Delete a Feature Template")
+@click.argument("template_id")
+def delete_feature_template(template_id):
+    headers = authentication(vmanage)
+    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+    api = f"/template/feature/{template_id}?api_key=/template/feature"
+    url = base_url + api
+    response = requests.delete(url=url, headers=headers, verify=False)
+    if response.status_code == 200:
+        print("Succeed to delete the template " + str(template_id))
+    else:
+        print("Failed to delete the template " + str(template_id))
+        exit()
+
+
+@feature.command(name="show", help="Show details of a Feature Template")
+@click.argument('template_id')
+def show_feature_template(template_id):
+    headers = authentication(vmanage)
+    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+    api = f"/template/feature/object/{template_id}?api_key=/template/feature"
+    url = base_url + api
+    response = requests.get(url=url, headers=headers, verify=False)
+    if response.status_code == 200:
+        print(json.dumps(response.json(), indent=4))
+    else:
+        print("Failed to show the template " + str(template_id))
+        exit()
+
+
+class PythonLiteralOption(click.Option):
+
+    def type_cast_value(self, ctx, value):
+        try:
+            return ast.literal_eval(value)
+        except:
+            raise click.BadParameter(value)
+
+
+@feature_create.command(name="banner", help="Create a Banner Feature Template")
+@click.option(
+    "--types", "-t", cls=PythonLiteralOption, default=[],
+    help="List of device types, ex. '[\"vedge-cloud\", \"vedge-1000\"]'",
+    )
+@click.option("--name", "-n", help="Name of the Template']")
+def create_feature_template(types, name):
+    """ Usage: sdwancli template feature create banner -t '["vedge-cloud", "vedge-1000"]' -n VE-banner-2
+    """
+    headers = authentication(vmanage)
+    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+    api = "/template/feature"
+    url = base_url + api
+    payload = {
+        "deviceType": types,
+        "templateType": "banner",
+        "templateMinVersion": "15.0.0",
+        "templateDefinition": {
+            "login": {
+                "vipObjectType": "object",
+                "vipType": "constant",
+                "vipValue": "This is vEdge Cloud Login banner",
+                "vipVariableName": "banner_login"
+            },
+            "motd": {
+                "vipObjectType": "object",
+                "vipType": "constant",
+                "vipValue": "This is vEdge Cloud MOTD banner",
+                "vipVariableName": "banner_motd"
+            }
+        },
+        "factoryDefault": "false",
+        "templateName": name,
+        "templateDescription": "VE-Banner 3"
+    }
+    response = requests.post(
+        url=url, data=json.dumps(payload), headers=headers, verify=False)
+    if response.status_code == 200:
+        print(json.dumps(response.json(), indent=4))
+    else:
+        print("Failed to create the template ")
+        exit()
+
+
+cli_template.add_command(device)
+cli_template.add_command(feature)
+feature.add_command(feature_create)

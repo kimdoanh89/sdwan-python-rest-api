@@ -1,0 +1,8 @@
+README.md
+setup.py
+sdwancli.egg-info/PKG-INFO
+sdwancli.egg-info/SOURCES.txt
+sdwancli.egg-info/dependency_links.txt
+sdwancli.egg-info/entry_points.txt
+sdwancli.egg-info/requires.txt
+sdwancli.egg-info/top_level.txt
