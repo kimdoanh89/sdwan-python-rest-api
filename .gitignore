@@ -4,3 +4,4 @@ venv/
 __pycache__/
 .mypy_cache/
 sdwan.py
+*.egg-info/
