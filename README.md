@@ -108,7 +108,8 @@ Setup Python Virtual Environment (requires Python 3.8+)
 ```bash
 python3.8 -m venv venv
 source venv/bin/activate
-pip install --editable .
+pip install -r requirements.txt
+pip install -e .
 ```
 A .py file with the Cisco SD-WAN credentials has been created in `vmanage/constants.py`. You can edit the variables in the file to point to your own vManage instance.
 
