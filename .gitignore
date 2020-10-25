@@ -5,5 +5,3 @@ __pycache__/
 .mypy_cache/
 sdwan.py
 *.egg-info/
-poetry.lock
-pyproject.toml
