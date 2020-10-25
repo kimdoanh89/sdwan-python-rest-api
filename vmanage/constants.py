@@ -1,5 +1,5 @@
 vmanage = {
-    "host": "192.168.148.201",
+    "host": "192.168.128.130",
     "port": "8443",
     "username": "admin",
     "password": "admin"
