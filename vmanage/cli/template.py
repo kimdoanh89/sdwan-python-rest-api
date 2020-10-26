@@ -7,6 +7,7 @@ from rich.table import Table
 # from rich.text import Text
 from vmanage.api.authenticate import authentication
 from vmanage.constants import vmanage
+from vmanage.api.vpn import generate_dict_vpn_ip_nexthops
 import ast
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -291,7 +292,12 @@ def create_system_feature_template(types, name, time_zone):
     )
 @click.option("--name", "-n", help="Name of the Template']")
 @click.option("--vpn_id", "-id", help="VPN ID of the VPN Template']")
-def create_vpn_feature_template(types, name, vpn_id):
+@click.option("--description", "-d", help="Description of the VPN Template']")
+@click.option("--prefix", "-p", help="Description of the VPN Template']", required=False)
+@click.option(
+    "--nexthops", "-nh", required=False, cls=PythonLiteralOption, default=[],
+    help="List of nexthops ip address names, ex. '[\"vpn_g2_if\", \"vpn_g1_if\"]'")
+def create_vpn_feature_template(types, name, vpn_id, description, prefix, nexthops):
     """ Usage: sdwancli template feature create banner -t '["vedge-cloud",
     "vedge-1000"]' -n VE-banner-2
     """
@@ -299,87 +305,209 @@ def create_vpn_feature_template(types, name, vpn_id):
     base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
     api = "/template/feature"
     url = base_url + api
-    payload = {
-        "deviceType": types,
-        "templateType": "vpn-vedge",
-        "templateMinVersion": "15.0.0",
-        "templateDefinition": {
-            "vpn-id": {
-                "vipObjectType": "object",
-                "vipType": "constant",
-                "vipValue": vpn_id
-            },
-            "name": {
-                "vipObjectType": "object",
-                "vipType": "constant",
-                "vipValue": "Transport VPN",
-                "vipVariableName": "vpn_name"
-            },
-            "ip": {
-                "route": {
+    if nexthops:
+        payload = {
+            "deviceType": types,
+            "templateType": "vpn-vedge",
+            "templateMinVersion": "15.0.0",
+            "templateDefinition": {
+                "vpn-id": {
+                    "vipObjectType": "object",
                     "vipType": "constant",
-                    "vipValue": [
-                        {
-                            "prefix": {
-                                "vipObjectType": "object",
-                                "vipType": "constant",
-                                "vipValue": "0.0.0.0/0",
-                                "vipVariableName": "vpn_ipv4_ip_prefix"
-                            },
-                            "vipOptional": "false",
-                            "next-hop": {
-                                "vipType": "constant",
-                                "vipValue": [
-                                    {
-                                        "address": {
-                                            "vipObjectType": "object",
-                                            "vipType": "variableName",
-                                            "vipValue": "",
-                                            "vipVariableName": "vpn0_g0_next_hop_ip_address_0"
-                                        }
-                                    },
-                                    {
-                                        "address": {
-                                            "vipObjectType": "object",
-                                            "vipType": "variableName",
-                                            "vipValue": "",
-                                            "vipVariableName": "vpn0_g1_next_hop_ip_address_1"
-                                        }
-                                    },
-                                    {
-                                        "address": {
-                                            "vipObjectType": "object",
-                                            "vipType": "variableName",
-                                            "vipValue": "",
-                                            "vipVariableName": "vpn0_g2_next_hop_ip_address_2"
-                                        }
-                                    }
-                                ],
-                                "vipObjectType": "tree",
-                                "vipPrimaryKey": [
-                                    "address"
-                                ]
-                            },
-                            "priority-order": [
-                                "prefix",
-                                "next-hop"
-                            ]
-                        }
-                    ],
-                    "vipObjectType": "tree",
-                    "vipPrimaryKey": [
-                        "prefix"
-                    ]
+                    "vipValue": vpn_id
                 },
-                "gre-route": {},
-                "ipsec-route": {},
-                "service-route": {}
-            }
-        },
-        "factoryDefault": "false",
-        "templateName": name,
-        "templateDescription": "VPN feature template"
-    }
+                "name": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": description,
+                    "vipVariableName": "vpn_name"
+                },
+                "ip": {
+                    "route": {
+                        "vipType": "constant",
+                        "vipValue": [
+                            {
+                                "prefix": {
+                                    "vipObjectType": "object",
+                                    "vipType": "constant",
+                                    "vipValue": prefix,
+                                    "vipVariableName": "vpn_ipv4_ip_prefix"
+                                },
+                                "vipOptional": "false",
+                                "next-hop": {
+                                    "vipType": "constant",
+                                    "vipValue": generate_dict_vpn_ip_nexthops(nexthops),
+                                    "vipObjectType": "tree",
+                                    "vipPrimaryKey": [
+                                        "address"
+                                    ]
+                                },
+                                "priority-order": [
+                                    "prefix",
+                                    "next-hop"
+                                ]
+                            }
+                        ],
+                        "vipObjectType": "tree",
+                        "vipPrimaryKey": [
+                            "prefix"
+                        ]
+                    },
+                    "gre-route": {},
+                    "ipsec-route": {},
+                    "service-route": {}
+                }
+            },
+            "factoryDefault": "false",
+            "templateName": name,
+            "templateDescription": "VPN feature template"
+        }
+    else:
+        payload = {
+            "deviceType": types,
+            "templateType": "vpn-vedge",
+            "templateMinVersion": "15.0.0",
+            "templateDefinition": {
+                "vpn-id": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": vpn_id
+                },
+                "name": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": description,
+                    "vipVariableName": "vpn_name"
+                },
+            },
+            "factoryDefault": "false",
+            "templateName": name,
+            "templateDescription": "VPN feature template"
+        }
+    response = requests.post(
+        url=url, data=json.dumps(payload), headers=headers, verify=False)
+    if response.status_code == 200:
+        print(json.dumps(response.json(), indent=4))
+    else:
+        print("Failed to create the template ")
+        exit()
+
+
+@feature_create.command(name="vpn-int", help="Create a Feature Template System")
+@click.option(
+    "--types", "-t", cls=PythonLiteralOption, default=[],
+    help="List of device types, ex. '[\"vedge-cloud\", \"vedge-1000\"]'",
+    )
+@click.option("--name", "-n", help="Name of the Template']")
+@click.option("--if_name", "-i", help="Interface Name of the VPN INT Template']")
+@click.option("--description", "-d", help="Description of the VPN INT']", required=False)
+@click.option("--ip_addr_name", "-ip", help="IPv4 variable name']", required=False)
+@click.option("--color", "-c", help="Color of the interface']", required=False)
+def create_vpn_int_feature_template(types, name, if_name, description, ip_addr_name, color):
+    """ Usage: sdwancli template feature create banner -t '["vedge-cloud",
+    "vedge-1000"]' -n VE-banner-2
+    """
+    headers = authentication(vmanage)
+    base_url = "https://" + f'{vmanage["host"]}:{vmanage["port"]}/dataservice'
+    api = "/template/feature"
+    url = base_url + api
+    if ip_addr_name:
+        payload = {
+            "deviceType": types,
+            "templateType": "vpn-vedge-interface",
+            "templateMinVersion": "15.0.0",
+            "templateDefinition": {
+                "if-name": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": if_name,
+                    "vipVariableName": "vpn_if_name"
+                },
+                "description": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": description,
+                    "vipVariableName": "vpn_if_description"
+                },
+                "ip": {
+                    "address": {
+                        "vipObjectType": "object",
+                        "vipType": "variableName",
+                        "vipValue": "",
+                        "vipVariableName": ip_addr_name
+                    }
+                },
+                    "shutdown": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": "false",
+                    "vipVariableName": "vpn_if_shutdown"
+                },
+                "tunnel-interface": {
+                    "color": {
+                        "value": {
+                            "vipObjectType": "object",
+                            "vipType": "constant",
+                            "vipValue": color,
+                            "vipVariableName": "vpn_if_tunnel_color_value"
+                        },
+                        "restrict": {
+                            "vipObjectType": "node-only",
+                            "vipType": "ignore",
+                            "vipValue": "false",
+                            "vipVariableName": "vpn_if_tunnel_color_restrict"
+                        }
+                    },
+                    "allow-service": {
+                        "sshd": {
+                            "vipObjectType": "object",
+                            "vipType": "constant",
+                            "vipValue": "true",
+                            "vipVariableName": "vpn_if_tunnel_sshd"
+                        },
+                        "all": {
+                            "vipObjectType": "object",
+                            "vipType": "constant",
+                            "vipValue": "true",
+                            "vipVariableName": "vpn_if_tunnel_all"
+                        },
+                        "netconf": {
+                            "vipObjectType": "object",
+                            "vipType": "constant",
+                            "vipValue": "true",
+                            "vipVariableName": "vpn_if_tunnel_netconf"
+                        }
+                    }
+                }
+            },
+            "factoryDefault": "false",
+            "templateName": name,
+            "templateDescription": "VPN Interface Ethernet feature template"
+        }
+    else:
+        payload = {
+            "deviceType": types,
+            "templateType": "vpn-vedge-interface",
+            "templateMinVersion": "15.0.0",
+            "templateDefinition": {
+                "if-name": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": if_name,
+                    "vipVariableName": "vpn_if_name"
+                },
+                "description": {
+                    "vipObjectType": "object",
+                    "vipType": "constant",
+                    "vipValue": description,
+                    "vipVariableName": "vpn_if_description"
+                }
+            },
+            "factoryDefault": "false",
+            "templateName": name,
+            "templateDescription": "VPN Interface Ethernet feature template"
+        }
+
     response = requests.post(
         url=url, data=json.dumps(payload), headers=headers, verify=False)
     if response.status_code == 200:
